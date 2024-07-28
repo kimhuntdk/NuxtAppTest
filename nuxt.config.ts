@@ -2,7 +2,6 @@
 
 export default defineNuxtConfig({
  modules: ['@nuxtjs/tailwindcss', 'nuxt-icon', '@nuxt/content', '@nuxt/image'],
-
  // plugins: [require("@tailwindcss/forms")],
  //compatibilityDate: '2024-07-28'
  content : {

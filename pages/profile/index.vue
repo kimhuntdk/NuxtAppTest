@@ -1,9 +1,21 @@
+
 <template>
     <br>
 <br>
 <br>
 <br>
 <div>
+  <div class="profile-container">
+    <h1>User Profile</h1>
+    <div v-if="user">
+      <p><strong>Name:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      
+    </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
+  </div>
   <div class="px-4 sm:px-0">
     <h3 class="text-base font-semibold leading-7 text-gray-900">Applicant Information</h3>
     <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Personal details and application.</p>
@@ -68,4 +80,36 @@
 
 <script setup>
 import { PaperClipIcon } from '@heroicons/vue/20/solid'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const user = ref(null)
+const router = useRouter()
+
+onMounted(async () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    router.push('/login')
+    return
+  }
+
+  try {
+    const response = await fetch('http://localhost:3002/api/users/profile', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error('Invalid token')
+    }
+
+    const data = await response.json()
+    user.value = data
+  } catch (error) {
+    console.error('Failed to fetch user profile:', error)
+    router.push('/login')
+  }
+})
 </script>
